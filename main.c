@@ -1,50 +1,31 @@
 #include <stdio.h>
 
-typedef struct _pixel {
-    unsigned short int r;
+typedef struct _pixel {     //pixel
+    unsigned short int r;   // colocar red,green and blue
     unsigned short int g;
     unsigned short int b;
 } Pixel;
 
-typedef struct _image {
+typedef struct _image {     //image
     // [width][height][rgb]
     // 0 -> r
     // 1 -> g
     // 2 -> b
     unsigned short int pixel[512][512][3];
-    unsigned int w;
-    unsigned int h;
+    unsigned int w;            //width
+    unsigned int h;            //heigth
 } Image;
 
 
-int max(int a, int b) {
-    if (a > b)
-        return a;
-    return b;
-}
-
-int pixel_igual(Pixel p1, Pixel p2) {
-    if (p1.r == p2.r &&
-        p1.g == p2.g &&
-        p1.b == p2.b)
-        return 1;
-    return 0;
-}
-
 
 Image escala_de_cinza(Image img) {
-    /*for (unsigned int i = 0; i < img.h; ++i) {
-        for (unsigned int j = 0; j < img.w; ++j) {
-            print("%u", img.pixel[i][j][0] + img.pixel[i][j][1] + img.pixel[i][j][2]);
-        }
-    }*/
 
-    for (unsigned int i = 0; i < img.h; ++i) {
-        for (unsigned int j = 0; j < img.w; ++j) {
+    for (unsigned int i = 0; i < img.h; ++i) {      //ler todas as linhas
+        for (unsigned int j = 0; j < img.w; ++j) {  //ler todas as colunas
             int media = img.pixel[i][j][0] +
                         img.pixel[i][j][1] +
                         img.pixel[i][j][2];
-            media /= 3;
+            media /= 3;                                         //criar método para média 
             img.pixel[i][j][0] = media;
             img.pixel[i][j][1] = media;
             img.pixel[i][j][2] = media;
