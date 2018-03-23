@@ -16,26 +16,27 @@ typedef struct image{     //image
     unsigned int width;            
     unsigned int height;            
 } Image;
-
+//Calcula o minimo.
 int minimum(int a, int b){
     if (a > b)
        	 return b;
 return a;
 }
+//Calcula o maximo.
 int maximum(int a ,int b){
 	if (a > b)
        	 return a;
 return b;
 }
 
-
+//Calcula a média de uma soma de 3 numeros.
 int calculate_average_sum(int a,int b,int c){
     float sum=a+b+c;
 return sum/3;
 }
 
 
-
+//Aplica o filtro cinza.
 Image apply_scale_grey(Image imagem) {
 
     for (unsigned int i = 0; i < imagem.height; ++i) {     
@@ -44,7 +45,7 @@ Image apply_scale_grey(Image imagem) {
                                        imagem.pixel[i][j].green,
                                        imagem.pixel[i][j].blue
                                        );
-            ///Fazer método para inverter pixels 
+            ///Fazer método para inverter pixels.
             imagem.pixel[i][j].red = media;  
             imagem.pixel[i][j].green = media;
             imagem.pixel[i][j].blue = media;
@@ -53,7 +54,7 @@ Image apply_scale_grey(Image imagem) {
 
 return imagem;
 }
-
+//Faz a soma dos pixels e salva em menor_r.
 unsigned short int change_pixels(double a,double b,double c,Pixel pixel) { 
    
      int p = pixel.red * a + 
@@ -63,15 +64,15 @@ unsigned short int change_pixels(double a,double b,double c,Pixel pixel) {
     int menor_r = minimum(255,p);
 return menor_r;
 }
-            
+//Aplica o filtro da sepia.            
 Image apply_sepia(Image imagem){
   	for (unsigned int x = 0; x < imagem.height; ++x) {
         for (unsigned int j = 0; j < imagem.width; ++j) {
             Pixel pixel;
             
-          pixel.red = imagem.pixel[x][j].red;
-          pixel.green = imagem.pixel[x][j].green;
-          pixel.blue = imagem.pixel[x][j].blue;
+          	pixel.red = imagem.pixel[x][j].red;
+         	pixel.green = imagem.pixel[x][j].green;
+         	pixel.blue = imagem.pixel[x][j].blue;
             
             imagem.pixel[x][j].red=change_pixels(0.393,0.769,0.189,pixel);
             imagem.pixel[x][j].green=change_pixels(0.349,0.686,0.168,pixel); 
@@ -81,7 +82,7 @@ Image apply_sepia(Image imagem){
   
 return imagem; 
 }
-
+//Aplica o filtro do blur.
 Image apply_blur(Image imagem) {
     int T = 0;
     scanf("%d", &T);
@@ -112,6 +113,7 @@ Image apply_blur(Image imagem) {
  	 }
  return imagem;
 }
+//Rotaciona a imagem 90 graus a direita.
 Image rotation_90_right(Image imagem) {
     Image rotacionada;
         rotacionada.width = imagem.height;
@@ -125,7 +127,7 @@ Image rotation_90_right(Image imagem) {
     
 return rotacionada;
 }
-
+//Aplica a rotação a quantidade de vezes definida
 Image apply_rotation(Image imagem){
 
     int times = 0; 
@@ -137,7 +139,7 @@ Image apply_rotation(Image imagem){
 	}
 return imagem;
 }
-
+//Aplica o filtro de espelhamento.
 Image mirroring(Image imagem){
     int horizontal = 0;
     scanf("%d", &horizontal);
@@ -162,15 +164,14 @@ Image mirroring(Image imagem){
     }
     return imagem;
 }
-
+//Faz a subtração dos pixels por 255(tamanho maximo).
 Pixel sub_pixel_max(Pixel pixel){
 	 pixel.red = 255 - pixel.red;
      pixel.green = 255 - pixel.green;
      pixel.blue = 255 - pixel.blue;
 return pixel;
 }
-
-
+//Aplica o filtro inverter cores.
 Image invert_colors(Image imagem) {
     for (unsigned int i = 0; i < imagem.height; ++i) {
         for (unsigned int j = 0; j < imagem.width; ++j) {
@@ -179,7 +180,7 @@ Image invert_colors(Image imagem) {
     }
 return imagem;
 }
-
+//Aplica o filtro cortar imagem
 Image cut_image(Image imagem) {
     int x, y;
     scanf("%d %d", &x, &y);
@@ -199,13 +200,11 @@ Image cut_image(Image imagem) {
 
  return cortada;
 }
+//imprime o resultado final da imagem.
 void print_image(Image imagem){
 
     printf("P3\n");
-        // print width height and color of image
     printf("%u %u\n255\n", imagem.width, imagem.height);
-
-    // print pixels of image
     for (unsigned int i = 0; i < imagem.height; ++i) {
         for (unsigned int j = 0; j < imagem.width; ++j) {
             printf("%hu %hu %hu ", imagem.pixel[i][j].red,
@@ -217,7 +216,7 @@ void print_image(Image imagem){
     }
 
 }
-
+//Faz a leitura da imagem.
 Image image_reading(Image imagem){
 	char p3[4];
     scanf("%s", p3);
@@ -243,51 +242,51 @@ int main() {
 
 
     imagem=image_reading(imagem);
-    int n_opcoes;
-    scanf("%d", &n_opcoes);
+    int n_options;
+    scanf("%d", &n_options);
 
-    for(int i = 0; i < n_opcoes; ++i) {
-        int opcao;
-        scanf("%d", &opcao);
+    for(int i = 0; i < n_options; ++i) {
+        int option;
+        scanf("%d", &option);
 
-        switch(opcao) {
-            case 1: { // Escala de Cinza
+        switch(option) {
+            case 1: { // Escala de Cinza.
             
                 imagem = apply_scale_grey(imagem);  //ok
             
             break;
             }
-            case 2: { // Filtro Sepia
+            case 2: { // Filtro Sepia.
             
                 imagem = apply_sepia(imagem); //ok
 
                 break;
             }
-            case 3: { // Apply_blur
+            case 3: { // Filtro Blur.
                
                 imagem = apply_blur(imagem); //ok
              
              break;
             }
-            case 4: { // Rotacao
+            case 4: { // Filtro Rotacao.
                
                     imagem = apply_rotation(imagem); //ok
                 
             break;
             }
-            case 5: { // Espelhamento
+            case 5: { // Filtro Espelhamento.
             
                     imagem= mirroring(imagem);       //ok
                     
             break;
             }
-           case 6: { // Inversao de Cores
+           case 6: { // Filtro Inversao de Cores.
             
                 imagem =invert_colors(imagem);
             
             break;
             }
-            case 7: { // Cortar Imagem
+            case 7: { // Filtro de Cortar Imagem.
             
                 imagem = cut_image(imagem);
             
@@ -297,7 +296,7 @@ int main() {
 
     }
 
-    // print type of image
+    //Imprimir imagem.
     print_image(imagem);
  return 0;
 }
