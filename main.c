@@ -28,6 +28,7 @@ int maximum(int a ,int b){
 return b;
 }
 
+
 int calculate_average_sum(int a,int b,int c){
     float sum=a+b+c;
 return sum/3;
@@ -117,14 +118,13 @@ Image rotation_90_right(Image imagem) {
 
         for (unsigned int i = 0, y = 0; i < rotacionada.height; ++i, ++y) {
             for (int j = rotacionada.width - 1, x = 0; j >= 0; --j, ++x) {
-                rotacionada.pixel[i][j].red = imagem.pixel[x][y].red;
-                rotacionada.pixel[i][j].green = imagem.pixel[x][y].green;
-                rotacionada.pixel[i][j].blue = imagem.pixel[x][y].blue;
+                rotacionada.pixel[i][j]= imagem.pixel[x][y];
             }
         }
     
 return rotacionada;
 }
+
 Image apply_rotation(Image imagem){
 
     int quantas_vezes = 0; //metodo para rotacion
@@ -154,30 +154,39 @@ Image mirroring(Image imagem){
              else x = imagem.height - 1 - i2;
 
             Pixel aux1;
-            aux1.red = imagem.pixel[i2][j].red;
-            aux1.green = imagem.pixel[i2][j].green;
-            aux1.blue = imagem.pixel[i2][j].blue;
+            aux1 = imagem.pixel[i2][j];
+            //aux1.green = imagem.pixel[i2][j].green;
+            //aux1.blue = imagem.pixel[i2][j].blue;
 
-            imagem.pixel[i2][j].red = imagem.pixel[x][y].red;
-            imagem.pixel[i2][j].green = imagem.pixel[x][y].green;
-            imagem.pixel[i2][j].blue = imagem.pixel[x][y].blue;
+            imagem.pixel[i2][j] = imagem.pixel[x][y];
+            //imagem.pixel[i2][j].green = imagem.pixel[x][y].green;
+            //imagem.pixel[i2][j].blue = imagem.pixel[x][y].blue;
 
-            imagem.pixel[x][y].red = aux1.red;
-            imagem.pixel[x][y].green = aux1.green;
-            imagem.pixel[x][y].blue = aux1.blue;
+            imagem.pixel[x][y] = aux1;
+            //imagem.pixel[x][y].green = aux1.green;
+            //imagem.pixel[x][y].blue = aux1.blue;
                     }
                 }
     return imagem;
 }
+Pixel sub_pixel_max(Pixel pixel){
+	 pixel.red = 255 - pixel.red;
+     pixel.green = 255 - pixel.green;
+     pixel.blue = 255 - pixel.blue;
+return pixel;
 
-void invert_colors(Pixel pixel[512][512], unsigned int width, unsigned int height) {
-    for (unsigned int i = 0; i < height; ++i) {
-        for (unsigned int j = 0; j < width; ++j) {
-            pixel[i][j].red = 255 - pixel[i][j].red;
-            pixel[i][j].green = 255 - pixel[i][j].green;
-            pixel[i][j].blue = 255 - pixel[i][j].blue;
+}
+
+
+
+
+Image invert_colors(Image imagem) {
+    for (unsigned int i = 0; i < imagem.height; ++i) {
+        for (unsigned int j = 0; j < imagem.width; ++j) {
+	    imagem.pixel[i][j]=sub_pixel_max(imagem.pixel[i][j]);
         }
     }
+return imagem;
 }
 
 Image cut_image(Image imagem) {
@@ -192,10 +201,9 @@ Image cut_image(Image imagem) {
 
     for(int i = 0; i < height; ++i) {
         for(int j = 0; j < width; ++j) {
-            cortada.pixel[i][j].red = imagem.pixel[i + y][j + x].red;
-            cortada.pixel[i][j].green = imagem.pixel[i + y][j + x].green;
-            cortada.pixel[i][j].blue = imagem.pixel[i + y][j + x].blue;
-        }
+            cortada.pixel[i][j] = imagem.pixel[i + y][j + x];
+           
+         }
     }
 
     return cortada;
@@ -284,7 +292,7 @@ int main() {
             }
            case 6: { // Inversao de Cores
             
-                invert_colors(imagem.pixel, imagem.width, imagem.height);
+                imagem =invert_colors(imagem);
             
             break;
             }
