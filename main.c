@@ -15,7 +15,11 @@ typedef struct image {     //image
     unsigned int width;            
     unsigned int height;            
 } Image;
-
+int max(int a, int b) {
+    if (a > b)
+        return b;
+return a;
+}
 int calcular_media(int argumento_1,int argumento_2,int argumento_3){
     float soma=argumento_1+argumento_2+argumento_3;
 return soma/3;
@@ -39,12 +43,14 @@ Image aplicar_escala_cinza(Image imagem) {
     return imagem;
 }
 
-unsigned short int transformar_pixel(double argumento_1,double argumento_2,double argumento_3,unsigned short int *pixel){
-            
-  
-    int p =  pixel[0]* argumento_1 + pixel[1] * argumento_2 + 
-    pixel[2] * argumento_3;//trocar nome p
-    int menor_r = (255 >  p) ? p : 255;
+unsigned short int transformar_pixel(double a,double b,double c,unsigned short int *pixel){
+    //trocar nome p
+   
+    int p = pixel[0] * a + 
+            pixel[1] * b + 
+            pixel[2] * c;
+
+    int menor_r = max(255,p);// usar um método para comparar 
     return menor_r;
                 }
             
@@ -61,26 +67,29 @@ Image aplicar_sepia(Image imagem){
             imagem.pixel[x][j][1]=transformar_pixel(0.349,0.686,0.168,pixel); 
             imagem.pixel[x][j][2]=transformar_pixel(0.272,0.534,0.131,pixel); 
         }
-                }
+    }
+    
     return imagem; 
 }
 
-void blur(unsigned int height, unsigned short int pixel[512][512][3], int T, unsigned int width) {
-    for (unsigned int i = 0; i < height; ++i) {
-        for (unsigned int j = 0; j < width; ++j) {
-            Pixel media = {0, 0, 0};
+void blur(unsigned int height, unsigned short int pixel[512][512][3], unsigned int width) {
+    int T = 0;
+    scanf("%d", &T);
+        for (unsigned int i = 0; i < height; ++i) {
+            for (unsigned int j = 0; j < width; ++j) {
+                Pixel media = {0, 0, 0};
 
-            int menor_h = (height - 1 > i + T/2) ? i + T/2 : height - 1;
-            int min_w = (width - 1 > j + T/2) ? j + T/2 : width - 1;
-            for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_h; ++x) {
-                for(int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_w; ++y) {
-                    media.r += pixel[x][y][0];
-                    media.g += pixel[x][y][1];
-                    media.b += pixel[x][y][2];
+                int menor_h = max(height - 1 , i + T/2);
+                int min_w = max(width - 1 , j + T/2); 
+                //usar max() sem zoar a imagem
+                for(unsigned int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_h; ++x) {
+                    for(unsigned int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_w; ++y) {
+                        media.r += pixel[x][y][0];
+                        media.g += pixel[x][y][1];
+                        media.b += pixel[x][y][2];
+                    }
                 }
-            }
 
-            // printf("%u", media.r)
             media.r /= T * T;
             media.g /= T * T;
             media.b /= T * T;
@@ -94,19 +103,54 @@ void blur(unsigned int height, unsigned short int pixel[512][512][3], int T, uns
 
 Image rotacionar90direita(Image imagem) {
     Image rotacionada;
+    int quantas_vezes = 0;
+    scanf("%d", &quantas_vezes);
+    quantas_vezes %= 4;
+    for (int j = 0; j < quantas_vezes; ++j) {
+        rotacionada.width = imagem.height;
+        rotacionada.height = imagem.width;
 
-    rotacionada.width = imagem.height;
-    rotacionada.height = imagem.width;
-
-    for (unsigned int i = 0, y = 0; i < rotacionada.height; ++i, ++y) {
-        for (int j = rotacionada.width - 1, x = 0; j >= 0; --j, ++x) {
-            rotacionada.pixel[i][j][0] = imagem.pixel[x][y][0];
-            rotacionada.pixel[i][j][1] = imagem.pixel[x][y][1];
-            rotacionada.pixel[i][j][2] = imagem.pixel[x][y][2];
+        for (unsigned int i = 0, y = 0; i < rotacionada.height; ++i, ++y) {
+            for (int j = rotacionada.width - 1, x = 0; j >= 0; --j, ++x) {
+                rotacionada.pixel[i][j][0] = imagem.pixel[x][y][0];
+                rotacionada.pixel[i][j][1] = imagem.pixel[x][y][1];
+                rotacionada.pixel[i][j][2] = imagem.pixel[x][y][2];
+            }
         }
     }
-
     return rotacionada;
+}
+Image Espelhamento(Image imagem){
+    int horizontal = 0;
+    scanf("%d", &horizontal);
+
+    int width = imagem.width, height = imagem.height;
+
+    if (horizontal == 1) width /= 2;
+    else height /= 2;
+
+    for (int i2 = 0; i2 < height; ++i2) {
+        for (int j = 0; j < width; ++j) {
+            int x = i2, y = j;
+
+             if (horizontal == 1) y = imagem.width - 1 - j;
+             else x = imagem.height - 1 - i2;
+
+            Pixel aux1;
+            aux1.r = imagem.pixel[i2][j][0];
+            aux1.g = imagem.pixel[i2][j][1];
+            aux1.b = imagem.pixel[i2][j][2];
+
+            imagem.pixel[i2][j][0] = imagem.pixel[x][y][0];
+            imagem.pixel[i2][j][1] = imagem.pixel[x][y][1];
+            imagem.pixel[i2][j][2] = imagem.pixel[x][y][2];
+
+            imagem.pixel[x][y][0] = aux1.r;
+            imagem.pixel[x][y][1] = aux1.g;
+            imagem.pixel[x][y][2] = aux1.b;
+                    }
+                }
+    return imagem;
 }
 
 void inverter_cores(unsigned short int pixel[512][512][3],
@@ -120,7 +164,11 @@ void inverter_cores(unsigned short int pixel[512][512][3],
     }
 }
 
-Image cortar_imagem(Image imagem, int x, int y, int width, int height) {
+Image cortar_imagem(Image imagem) {
+    int x, y;
+    scanf("%d %d", &x, &y);
+    int width, height;
+    scanf("%d %d", &width, &height);
     Image cortada;
 
     cortada.width = width;
@@ -168,59 +216,28 @@ int main() {
 
         switch(opcao) {
             case 1: { // Escala de Cinza
-                imagem = aplicar_escala_de_cinza(imagem);
+                imagem = aplicar_escala_cinza(imagem);  //ok
                 break;
             }
             case 2: { // Filtro Sepia
-                imagem = aplicar_sepia(imagem);
+                imagem = aplicar_sepia(imagem); //ok
 
                 break;
             }
             case 3: { // Blur
-                int tamanho = 0;
-                scanf("%d", &tamanho);
-                blur(imagem.height, imagem.pixel, tamanho, imagem.width);
+               
+                blur(imagem.height, imagem.pixel, imagem.width); //ok
                 break;
             }
             case 4: { // Rotacao
-                int quantas_vezes = 0;
-                scanf("%d", &quantas_vezes);
-                quantas_vezes %= 4;
-                for (int j = 0; j < quantas_vezes; ++j) {
-                    imagem = rotacionar90direita(imagem);
-                }
+               
+                    imagem = rotacionar90direita(imagem); //ok
+                
                 break;
             }
             case 5: { // Espelhamento
-                int horizontal = 0;
-                scanf("%d", &horizontal);
-
-                int width = imagem.width, height = imagem.height;
-
-                if (horizontal == 1) width /= 2;
-                else height /= 2;
-
-                for (int i2 = 0; i2 < height; ++i2) {
-                    for (int j = 0; j < width; ++j) {
-                        int x = i2, y = j;
-
-                        if (horizontal == 1) y = imagem.width - 1 - j;
-                        else x = imagem.height - 1 - i2;
-
-                        Pixel aux1;
-                        aux1.r = imagem.pixel[i2][j][0];
-                        aux1.g = imagem.pixel[i2][j][1];
-                        aux1.b = imagem.pixel[i2][j][2];
-
-                        imagem.pixel[i2][j][0] = imagem.pixel[x][y][0];
-                        imagem.pixel[i2][j][1] = imagem.pixel[x][y][1];
-                        imagem.pixel[i2][j][2] = imagem.pixel[x][y][2];
-
-                        imagem.pixel[x][y][0] = aux1.r;
-                        imagem.pixel[x][y][1] = aux1.g;
-                        imagem.pixel[x][y][2] = aux1.b;
-                    }
-                }
+                    imagem= Espelhamento(imagem);       //ok
+                    
                 break;
             }
             case 6: { // Inversao de Cores
@@ -228,12 +245,7 @@ int main() {
                 break;
             }
             case 7: { // Cortar Imagem
-                int x, y;
-                scanf("%d %d", &x, &y);
-                int width, height;
-                scanf("%d %d", &width, &height);
-
-                imagem = cortar_imagem(imagem, x, y, width, height);
+                imagem = cortar_imagem(imagem);
                 break;
             }
         }
