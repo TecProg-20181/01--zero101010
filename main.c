@@ -184,7 +184,24 @@ Image cortar_imagem(Image imagem) {
 
     return cortada;
 }
+void printar_resultados(Image imagem){
 
+    printf("P3\n");
+        // print width height and color of image
+    printf("%u %u\n255\n", imagem.width, imagem.height);
+
+    // print pixels of image
+    for (unsigned int i = 0; i < imagem.height; ++i) {
+        for (unsigned int j = 0; j < imagem.width; ++j) {
+            printf("%hu %hu %hu ", imagem.pixel[i][j][0],
+                                   imagem.pixel[i][j][1],
+                                   imagem.pixel[i][j][2]);
+
+        }
+        printf("\n");
+    }
+
+}
 
 int main() {
     Image imagem;
@@ -253,19 +270,6 @@ int main() {
     }
 
     // print type of image
-    printf("P3\n");
-    // print width height and color of image
-    printf("%u %u\n255\n", imagem.width, imagem.height);
-
-    // print pixels of image
-    for (unsigned int i = 0; i < imagem.height; ++i) {
-        for (unsigned int j = 0; j < imagem.width; ++j) {
-            printf("%hu %hu %hu ", imagem.pixel[i][j][0],
-                                   imagem.pixel[i][j][1],
-                                   imagem.pixel[i][j][2]);
-
-        }
-        printf("\n");
-    }
+    printar_resultados(imagem);
     return 0;
 }
