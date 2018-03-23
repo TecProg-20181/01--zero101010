@@ -110,13 +110,8 @@ void apply_blur(unsigned int height, Pixel pixel[512][512], unsigned int width) 
         }
     }
 }
-
 Image rotation_90_right(Image imagem) {
     Image rotacionada;
-    int quantas_vezes = 0; //metodo para rotacion
-    scanf("%d", &quantas_vezes);
-    quantas_vezes %= 4;
-    for (int j = 0; j < quantas_vezes; ++j) {
         rotacionada.width = imagem.height;
         rotacionada.height = imagem.width;
 
@@ -127,9 +122,21 @@ Image rotation_90_right(Image imagem) {
                 rotacionada.pixel[i][j].blue = imagem.pixel[x][y].blue;
             }
         }
-    }
-    return rotacionada;
+    
+return rotacionada;
 }
+Image apply_rotation(Image imagem){
+
+    int quantas_vezes = 0; //metodo para rotacion
+    scanf("%d", &quantas_vezes);
+    quantas_vezes %= 4;
+    for (int j = 0; j < quantas_vezes; ++j) {
+    	imagem=rotation_90_right(imagem);
+
+	}
+return imagem;
+}
+
 Image mirroring(Image imagem){
     int horizontal = 0;
     scanf("%d", &horizontal);
@@ -265,7 +272,7 @@ int main() {
             }
             case 4: { // Rotacao
                
-                    imagem = rotation_90_right(imagem); //ok
+                    imagem = apply_rotation(imagem); //ok
                 
             break;
             }
