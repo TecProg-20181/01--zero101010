@@ -17,10 +17,15 @@ typedef struct image{     //image
     unsigned int height;            
 } Image;
 
-int max(int a, int b){
+int minimum(int a, int b){
     if (a > b)
-        return b;
+       	 return b;
 return a;
+}
+int maximum(int a ,int b){
+	if (a > b)
+       	 return a;
+return b;
 }
 
 int calculate_average_sum(int a,int b,int c){
@@ -32,9 +37,9 @@ return sum/3;
 
 Image apply_scale_grey(Image imagem) {
 
-    for (unsigned int i = 0; i < imagem.height; ++i) {      //ler todas as linhas
-        for (unsigned int j = 0; j < imagem.width; ++j) {  //ler todas as colunas
-            int media = calculate_average(imagem.pixel[i][j].red,
+    for (unsigned int i = 0; i < imagem.height; ++i) {     
+        for (unsigned int j = 0; j < imagem.width; ++j) {  
+            int media = calculate_average_sum(imagem.pixel[i][j].red,
                                        imagem.pixel[i][j].green,
                                        imagem.pixel[i][j].blue
                                        );
@@ -48,19 +53,19 @@ Image apply_scale_grey(Image imagem) {
 return imagem;
 }
 
-unsigned short int change_pixels(double a,double b,double c,Pixel pixel){ //Pixel pixel
+unsigned short int change_pixels(double a,double b,double c,Pixel pixel) { //Pixel pixel
     //trocar nome p
    
     int p = pixel.red * a + 
             pixel.green * b + 
             pixel.blue * c;
 
-    int menor_r = max(255,p);// usar um método para comparar 
+    int menor_r = minimum(255,p);// usar um método para comparar 
 return menor_r;
 }
             
 Image apply_sepia(Image imagem){
-  	for (unsigned int x = 0; x < imagem.height; ++x){
+  	for (unsigned int x = 0; x < imagem.height; ++x) {
         for (unsigned int j = 0; j < imagem.width; ++j) {
             Pixel pixel;
             
@@ -84,11 +89,11 @@ void apply_blur(unsigned int height, Pixel pixel[512][512], unsigned int width) 
             for ( unsigned short int j = 0; j < width; ++j) {
                 Pixel media = {0, 0, 0};
 
-                int menor_h = max(height - 1 , i + T/2);
-                int min_w = max(width - 1 , j + T/2); 
-                //usar max() sem zoar a imagem
-                for(unsigned short int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_h; ++x) {
-                    for(unsigned short int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_w; ++y) {
+                int menor_h = minimum(height - 1 , i + T/2);
+                int min_w = minimum(width - 1 , j + T/2); 
+                //usar minimum() sem zoar a imagem
+                for(unsigned short int x = maximum(0 ,i - T/2); x <= menor_h; ++x) {
+                    for(unsigned short int y = maximum(0 , j - T/2); y <= min_w; ++y) {
                         media.red += pixel[x][y].red;
                         media.green += pixel[x][y].green;
                         media.blue += pixel[x][y].blue;
@@ -207,7 +212,7 @@ void printar_resultados(Image imagem){
 
 }
 
-/*Image leitura_imagem(Image imagem){
+Image image_reading(Image imagem){
 	char p3[4];
     scanf("%s", p3);
 
@@ -225,29 +230,13 @@ void printar_resultados(Image imagem){
         }
     }
 return imagem;
-}*/
+}
 
 int main() {
     Image imagem;
 
-    // read type of image
-    char p3[4];
-    scanf("%s", p3);
 
-    // read width height and color of image
-    int max_color;
-    scanf("%u %u %d", &imagem.width, &imagem.height, &max_color);
-
-    // read all pixels of image
-    for (unsigned int i = 0; i < imagem.height; ++i) {
-        for (unsigned int j = 0; j < imagem.width; ++j) {
-            scanf("%hu %hu %hu", &imagem.pixel[i][j].red,
-                                 &imagem.pixel[i][j].green,
-                                 &imagem.pixel[i][j].blue);
-
-        }
-    }
-    //leitura_imagem(imagem);
+    imagem=image_reading(imagem);
     int n_opcoes;
     scanf("%d", &n_opcoes);
 
